@@ -1,25 +1,25 @@
 import yfinance as yf
 
 class Stock:
-    def __init__(self, name,per,avg :int):
+    def __init__(self, name :str,per :int,avg :int):
         self.name = name               
         self.per = per
         self.avg = avg
         self.data = yf.download(self.name, period=f"{self.per}mo")
-        list=(self.data[:self.avg]["Close"].values)
-        self.sma = sum(list)/self.avg 
-        self.prev = (sum(list[:-1]))/(self.avg-1)
+        sma_list=(self.data[:self.avg]["Close"].values)
+        self.sma = sum(sma_list)/self.avg 
+        self.prev = (sum(sma_list[:-1]))/(self.avg-1)
         alpha=2/(self.avg + 1)
         current = self.data["Close"].iloc[self.avg].values
         
         self.ema = (current * alpha) + (self.prev * (1 - alpha))
-        list1 =(self.data[:14]["Close"].values)
+        rsi_list =(self.data[:14]["Close"].values)
         gain = []
         loss = []
-        for i in range(len(list1)):
+        for i in range(len(rsi_list)):
             if(i == 0):
                 continue
-            diff=list1[i]-list1[i-1]
+            diff=rsi_list[i]-rsi_list[i-1]
             if(diff > 0):
                 gain.append(diff)
             else:
